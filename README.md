@@ -55,7 +55,7 @@ Result:
 Now let's run an example
 
 ```
-./gradlew example-basic:run
+./gradlew run
 ```
 
 In another terminal, use `lhctl` to run the workflow:
