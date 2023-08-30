@@ -1,4 +1,8 @@
-## Quick Start for Java
+<p align="center">
+<img alt="LH" src="https://littlehorse.dev/img/logo.jpg" width="50%">
+</p>
+
+## Quickstart for Java
 
 ### Prerequisites
 
