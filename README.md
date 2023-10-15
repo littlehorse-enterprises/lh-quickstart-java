@@ -2,83 +2,296 @@
 <img alt="LH" src="https://littlehorse.dev/img/logo.jpg" width="50%">
 </p>
 
-## Quickstart for Java
+# LittleHorse Java Quickstart
 
-### Prerequisites
+- [LittleHorse Java Quickstart](#littlehorse-java-quickstart)
+- [Prerequisites](#prerequisites)
+  - [LittleHorse CLI](#littlehorse-cli)
+  - [Local LH Server Setup](#local-lh-server-setup)
+  - [Verifying Setup](#verifying-setup)
+- [Running the Example](#running-the-example)
+  - [Register Workflow](#register-workflow)
+  - [Run Workflow](#run-workflow)
+  - [Run Task Worker](#run-task-worker)
+- [Advanced Topics](#advanced-topics)
+  - [Inspect the TaskRun](#inspect-the-taskrun)
+  - [Search for Someone's Workflow](#search-for-someones-workflow)
+  - [NodeRuns and TaskRuns](#noderuns-and-taskruns)
+  - [Debugging Errors](#debugging-errors)
+- [Next Steps](#next-steps)
+
+**Get started in under 5 minutes, or your money back!** :wink:
+
+This repo contains a minimal example to get you started using LittleHorse in Java. [LittleHorse](www.littlehorse.dev) is a high-performance orchestration engine which lets you build workflow-driven microservice applications with ease.
+
+You can run this example in two ways:
+
+1. Using a local deployment of a LittleHorse Server (instructions below, requires one `docker` command).
+2. Using a LittleHorse Server deployed in a cloud sandbox (to get one, contact `info@littlehorse.io`).
+
+In this example, we will run a classic "Greeting" workflow as a quickstart. The workflow takes in one input variable (`input-name`), and calls a `greet` Task Function with the specified `input-name` as input.
+
+# Prerequisites
+
+Your system needs:
 
 - Java 11 or greater
-- `docker`
-- `go`
+- `docker` to run the LH Server, OR access to a private LH Cloud Sandbox.
+- Homebrew (tested on Mac or Linux) to install `lhctl`
 
-### Running Locally
+This example uses Gradle to compile the Java code, but you can get around that dependency by using `./gradlew` which wraps the gradle binary in a Jar file and relies upon your system installation of Java.
 
-Install `lhctl`:
+## LittleHorse CLI
 
-```
-go install github.com/littlehorse-enterprises/littlehorse/lhctl@latest
-```
-
-Verify the installation:
+Install the LittleHorse CLI:
 
 ```
-lhctl
+brew install littlehorse-enterprises/lh/lhctl
 ```
 
-Start a LH Server with:
+Alternatively, if you have `go` but don't have homebrew, you can:
 
 ```
-docker run --name littlehorse -d -p 2023:2023 public.ecr.aws/k7z9g8i4/littlehorse-standalone:latest
+go install https://github.com/littlehorse-enterprises/littlehorse/lhctl@latest
 ```
 
-When you run the LH Server according to the command above, the API Host is `localhost` and the API Port is `2023`.
-Now configure `~/.config/littlehorse.config`:
+## Local LH Server Setup
+
+If you have obtained a private LH Cloud Sandbox, you can skip this step and just follow the configuration instructions you received from the LittleHorse Team (remember to set your environment variables!).
+
+To run a LittleHorse Server locally in one command, you can run:
 
 ```
-LHC_API_HOST=localhost
-LHC_API_PORT=2023
+docker run --name littlehorse -d -p 2023:2023 public.ecr.aws/littlehorse/lh-standalone:latest
 ```
 
-You can confirm that the Server is running via:
+Using the local LittleHorse Server takes about 15-25 seconds to start up, but it does not require any further configuration.
+
+## Verifying Setup
+
+At this point, whether you are using a local Docker deployment or a private LH Cloud Sandbox, you should be able to contact the LH Server:
 
 ```
-lhctl search wfSpec
-```
-
-Result:
-
-```
+-> lhctl search wfSpec
 {
-  "results": []
+    "results": []
 }
 ```
 
-Now let's run an example
+If you _can't_ get the above to work, please let us know at `info@littlehorse.io`. We will create a community slack for support soon.
+
+# Running the Example
+
+Without further ado, let's run the example start-to-finish.
+
+## Register Workflow
+
+Let's run the `Main` app with the `register` argument, which does two things:
+
+1. Registers a `TaskDef` named `greet` with LittleHorse.
+2. Registers a `WfSpec` named `quickstart` with LittleHorse.
+
+A [`WfSpec`](https://littlehorse.dev/docs/concepts/workflows) specifies a process which can be orchestrated by LittleHorse. A [`TaskDef`](https://littlehorse.dev/docs/concepts/tasks) tells LittleHorse about a specification of a task that can be executed as a step in a `WfSpec`.
 
 ```
-./gradlew run
+./gradlew run --args register
 ```
 
-In another terminal, use `lhctl` to run the workflow:
+You can inspect your `WfSpec` with `lhctl` as follows. It's ok if the response doesn't make sense, we have a UI coming really soon which visualizes it for you!
+
+```bash
+lhctl get wfSpec quickstart
+```
+
+## Run Workflow
+
+Now, let's run our first `WfRun`! Use `lhctl` to run an instance of our `WfSpec`. 
 
 ```
-# Here, we specify that the "input-name" variable = "Obi-Wan"
-lhctl run example-basic input-name Obi-Wan
+# Run the 'quickstart' WfSpec, and set 'input-name' = "obi-wan"
+lhctl run quickstart input-name obi-wan
 ```
 
-Now let's inspect the result:
+The response prints the initial status of the `WfRun`. Pull out the `id` and copy it!
+
+Let's look at our `WfRun` once again:
 
 ```
-# This call shows the workflow specification
-lhctl get wfSpec example-basic
+lhctl get wfRun <wf_run_id>
+```
 
-# This call shows the result
-lhctl get wfRun <wf run id>
+Note that the status is `RUNNING`! Why hasn't it completed? That's because we haven't yet started a worker which executes the `greet` tasks. Want to verify that? Let's search for all tasks in the queue which haven't been executed yet. You should see an entry whose `wfRunId` matches the Id from above:
 
-# Inspect the first NodeRun of the WfRun
-lhctl get nodeRun <wf run id> 0 1
+```
+lhctl search taskRun --taskDefName greet --status TASK_SCHEDULED
+```
 
-# This shows the task run information
+## Run Task Worker
+
+Now let's start our worker, so that our blocked `WfRun` can finish. What this does is start a daemon which calls the `Greeter#greet()` Java Method for every scheduled `TaskRun` with appropriate parameters.
+
+```
+./gradlew run --args worker
+```
+
+Once the worker starts up, please open another terminal and inspect our `WfRun` again:
+
+```
+lhctl get wfRun <wf_run_id>
+```
+
+Voila! It's completed. You can also verify that the Task Queue is empty now that the Task Worker executed all of the tasks:
+
+```
+lhctl search taskRun --taskDefName greet --status TASK_SCHEDULED
+```
+
+
+# Advanced Topics
+
+You have now passed the requirements to reach the level of Jedi Youngling. Want to become a Padawan, or even a Knight? Then keep reading!
+
+Here are some cool commands which scratch the surface of observability offered to you by LittleHorse. Note that we are _almost_ done with a UI which will let you do this via click-ops rather than bash-ops.
+
+Also, note that everything we are doing here can be done programmatically via our SDK's, but it's easier to demonstrate with `lhctl`.
+
+## Inspect the TaskRun
+
+Let's find the completed `TaskRun`:
+
+```
+lhctl search taskRun --taskDefName greet --status TASK_SUCCESS
+```
+
+Take the output from above, and inspect it! Notice that you can see the input variables and also the output, which is a greeting string.
+
+```
+lhctl get taskRun <wf_run_id> <task_guid>
+```
+
+## Search for Someone's Workflow
+
+Remember we passed an `input-name` variable to our workflow? If you look in `register_workflow.py`, specifically the `get_workflow()` function, you can see that we created an Index on the variable. This means we can search for variables by their value!
+
+```
+lhctl search variable --varType STR --wfSpecName quickstart --name input-name --value obi-wan
+```
+
+And the following should return an empty list (unless, of course, you do `lhctl run quickstart input-name asdfasdf`)
+
+```
+lhctl search variable --varType STR --wfSpecName quickstart --name input-name --value asdfasdf
+```
+
+## NodeRuns and TaskRuns
+
+Let's look at our `WfRun`:
+
+```
+-> lhctl get wfRun <wfRunId>
+{
+  "id": "4a139cd6326944d8a2f2021385a259e0",
+  "wfSpecName": "quickstart",
+  "wfSpecVersion": 0,
+  "status": "COMPLETED",
+  "startTime": "2023-10-15T04:56:26.292Z",
+  "endTime": "2023-10-15T04:56:57.158Z",
+  "threadRuns": [
+    {
+      "number": 0,
+      "status": "COMPLETED",
+      "threadSpecName": "entrypoint",
+      "startTime": "2023-10-15T04:56:26.350Z",
+      "endTime": "2023-10-15T04:56:57.154Z",
+      "childThreadIds": [],
+      "haltReasons": [],
+      "currentNodePosition": 2,
+      "handledFailedChildren": [],
+      "type": "ENTRYPOINT"
+    }
+  ],
+  "pendingInterrupts": [],
+  "pendingFailures": []
+}
+```
+
+There are a few things to note:
+* The `status` is `COMPLETED`
+* There is one `ThreadRun`. That makes sense, since we didn't add multi-threading to the `WfRun`.
+* The `currentNodePosition` is 2.
+
+What is a `NodeRun`? A `NodeRun` is a step in a `ThreadRun`. Our workflow's main `ThreadRun` has three steps:
+
+1. The `ENTRYPOINT` node
+2. The `TASK` node to execute the `greet` task
+3. The `EXIT` node, which wraps things up.
+
+Let's see all of our nodes via:
+
+```
+lhctl list nodeRun <wfRunId>
+```
+
+Note that the second `nodeRun` has a `task` field, points to the `TaskRun` we saw earlier. You can find it via:
+
+```
 lhctl get taskRun <wfRunId> <taskGuid>
 ```
 
-> More Java examples [here](https://github.com/littlehorse-enterprises/littlehorse/tree/master/examples).
+## Debugging Errors
+
+What happens if a Task Run fails? Edit `Greeter.java` and make the `greeting()` function throw an error of choice (maybe `throw new RuntimeException("asdf")` or something like that). Then, restart the worker via `./gradlew run --args worker`.
+
+Run another workflow:
+
+```
+lhctl run quickstart input-name anakin
+```
+
+Then, `lhctl get wfRun <wfRunId>` should show that the workflow failed. It should also show that `currentNodePosition` for `ThreadRun` `0` is `1`. Let's inspect the NodeRun:
+
+```
+lhctl get nodeRun <wfRunId> 0 1
+```
+
+It's a `TaskRun`! Let's see what happened:
+
+```
+lhctl get taskRun <wfRunId> <taskGuid>
+```
+
+As you can see, you can get the stack trace through the LittleHorse API.
+
+You can also find the `TaskRun` by searching for failed tasks. Remember that all of this will be presented in a super-cool UI once we have it finished.
+
+```
+lhctl search taskRun --taskDefName greet --status TASK_ERROR
+
+# or search for workflows by their status
+lhctl search wfRun --wfSpecName quickstart --status ERROR
+lhctl search wfRun --wfSpecName quickstart --status COMPLETED
+```
+
+If you want to handle such failures in your workflow, check our [exception handling documentation](www.littlehorse.dev/docs/concepts/exception-handling).
+
+# Next Steps
+
+If you've made it this far, then it's time you become a full-fledged LittleHorse Knight!
+
+Want to do more cool stuff with LittleHorse and Java? You can find more Java examples [here](https://github.com/littlehorse-enterprises/littlehorse/tree/master/examples). This example only shows rudimentary features like tasks and variables. Some additional features not covered in this quickstart include:
+
+* Conditionals
+* Loops
+* External Events (webhooks/signals etc)
+* Interrupts
+* User Tasks
+* Multi-Threaded Workflows
+* Workflow Exception Handling
+
+We also have quickstarts in [Python](https://github.com/littlehorse-enterprises/lh-quickstart-python) and [Go](https://github.com/littlehorse-enterprises/lh-quickstart-go). Support for .NET is coming soon.
+
+Our extensive [documentation](www.littlehorse.dev) explains LittleHorse concepts in detail and shows you how take full advantage of our system.
+
+Our LittleHorse Server is free for production use under the SSPL license. You can find our official docker image at the [AWS ECR Public Gallery](https://gallery.ecr.aws/littlehorse/lh-server). If you would like enterprise support, or a managed service (either in the cloud or on-prem), contact `info@littlehorse.io`.
+
+Happy riding!
