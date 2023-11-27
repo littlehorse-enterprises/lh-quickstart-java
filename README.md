@@ -62,7 +62,7 @@ If you have obtained a private LH Cloud Sandbox, you can skip this step and just
 To run a LittleHorse Server locally in one command, you can run:
 
 ```
-docker run --name littlehorse -d -p 2023:2023 public.ecr.aws/littlehorse/lh-standalone:latest
+docker run --name littlehorse -d -p 2023:2023 public.ecr.aws/littlehorse/lh-standalone:0.5.2
 ```
 
 Using the local LittleHorse Server takes about 15-25 seconds to start up, but it does not require any further configuration.
