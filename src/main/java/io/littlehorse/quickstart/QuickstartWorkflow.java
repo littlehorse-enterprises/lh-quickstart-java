@@ -18,6 +18,9 @@ public class QuickstartWorkflow {
         // Create an input variable
         WfRunVariable name = wf.addVariable("input-name", VariableType.STR);
 
+        // Make the variable searchable
+        name.withIndex(IndexType.LOCAL_INDEX).persistent();
+
         // Execute a task and pass in the variable.
         wf.execute(GREET, name);
     }
