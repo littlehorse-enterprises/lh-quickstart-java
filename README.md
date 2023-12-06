@@ -46,13 +46,13 @@ This example uses Gradle to compile the Java code, but you can get around that d
 Install the LittleHorse CLI:
 
 ```
-brew install littlehorse-enterprises/lh/lhctl@0.7
+brew install littlehorse-enterprises/lh/lhctl
 ```
-d
+
 Alternatively, if you have `go` but don't have homebrew, you can:
 
 ```
-go install github.com/littlehorse-enterprises/littlehorse/lhctl@0.7.0-alpha.1
+go install github.com/littlehorse-enterprises/littlehorse/lhctl@0.7.0-alpha.3
 ```
 
 ## Local LH Server Setup
@@ -62,7 +62,7 @@ If you have obtained a private LH Cloud Sandbox, you can skip this step and just
 To run a LittleHorse Server locally in one command, you can run:
 
 ```
-docker run --name littlehorse -d -p 2023:2023 public.ecr.aws/littlehorse/lh-standalone:0.7.0-alpha.1
+docker run --name littlehorse -d -p 2023:2023 -p 8080:8080 public.ecr.aws/littlehorse/lh-standalone:0.7.0-alpha.3
 ```
 
 Using the local LittleHorse Server takes about 15-25 seconds to start up, but it does not require any further configuration.
@@ -77,6 +77,8 @@ At this point, whether you are using a local Docker deployment or a private LH C
     "results": []
 }
 ```
+
+**You should also be able to see the dashboard** at `https://localhost:8080`. It should be empty, but we will put some data in there soon!
 
 If you _can't_ get the above to work, please let us know at `info@littlehorse.io`. We will create a community slack for support soon.
 
@@ -97,11 +99,13 @@ A [`WfSpec`](https://littlehorse.dev/docs/concepts/workflows) specifies a proces
 ./gradlew run --args register
 ```
 
-You can inspect your `WfSpec` with `lhctl` as follows. It's ok if the response doesn't make sense, we have a UI coming really soon which visualizes it for you!
+You can inspect your `WfSpec` with `lhctl` as follows. It's ok if the response doesn't make sense, we will see it soon!
 
 ```bash
 lhctl get wfSpec quickstart
 ```
+
+Now, go to your dashboard in your browser (`http://localhost:8080`) and refresh the page. Scroll down, and double-click on the `quickstart` WfSpec. You should see something that looks like a flow-chart. That is your Workflow Specification!
 
 ## Run Workflow
 
@@ -114,17 +118,21 @@ lhctl run quickstart input-name obi-wan
 
 The response prints the initial status of the `WfRun`. Pull out the `id` and copy it!
 
-Let's look at our `WfRun` once again:
+Let's look at our `WfRun` once again. To do it with the CLI, please run:
 
 ```
 lhctl get wfRun <wf_run_id>
 ```
+
+If you would like to see it on the dashboard, refresh the `WfSpec` page and scroll down. You should see your ID under the `RUNNING` column. Please double-click on your `WfRun` id, and it will take you to the `WfRun` page.
 
 Note that the status is `RUNNING`! Why hasn't it completed? That's because we haven't yet started a worker which executes the `greet` tasks. Want to verify that? Let's search for all tasks in the queue which haven't been executed yet. You should see an entry whose `wfRunId` matches the Id from above:
 
 ```
 lhctl search taskRun --taskDefName greet --status TASK_SCHEDULED
 ```
+
+You can also see the `TaskRun` node on the workflow. It's highlighted, meaning that it's already running!
 
 ## Run Task Worker
 
@@ -146,6 +154,7 @@ Voila! It's completed. You can also verify that the Task Queue is empty now that
 lhctl search taskRun --taskDefName greet --status TASK_SCHEDULED
 ```
 
+Please refresh the dashboard, and you can see the `WfRun` has been completed!
 
 # Advanced Topics
 
