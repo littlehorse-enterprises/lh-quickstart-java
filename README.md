@@ -274,7 +274,7 @@ As you can see, you can get the stack trace through the LittleHorse API.
 You can also find the `TaskRun` by searching for failed tasks. Remember that all of this will be presented in a super-cool UI once we have it finished.
 
 ```
-lhctl search taskRun --taskDefName greet --status TASK_ERROR
+lhctl search taskRun --taskDefName greet --status TASK_FAILED
 
 # or search for workflows by their status
 lhctl search wfRun --wfSpecName quickstart --status ERROR
