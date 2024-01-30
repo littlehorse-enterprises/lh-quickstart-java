@@ -24,10 +24,7 @@ public class Main {
         // Generate the TaskDef from the worker object itself
         Greeter greeter = new Greeter();
         LHTaskWorker worker = new LHTaskWorker(greeter, "greet", config);
-
-        // Register the TaskDef if it doesn't already exist.
-        boolean swallowAlreadyExistsError = true;
-        worker.registerTaskDef(swallowAlreadyExistsError);
+        worker.registerTaskDef();
 
         // Since we didn't start the worker, this is a no-op, but it prevents
         // VSCode from underlining with a squiggly
@@ -43,7 +40,6 @@ public class Main {
      * and executes them.
      */
     private static void runWorker() throws IOException {
-        // Generate the TaskDef from the worker object itself
         Greeter greeter = new Greeter();
         LHTaskWorker worker = new LHTaskWorker(greeter, "greet", getConfig());
 

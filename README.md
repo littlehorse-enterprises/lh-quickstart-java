@@ -52,7 +52,7 @@ brew install littlehorse-enterprises/lh/lhctl
 Alternatively, if you have `go` but don't have homebrew, you can:
 
 ```
-go install github.com/littlehorse-enterprises/littlehorse/lhctl@0.7.0-alpha.3
+go install github.com/littlehorse-enterprises/littlehorse/lhctl@0.7.1
 ```
 
 ## Local LH Server Setup
@@ -62,7 +62,7 @@ If you have obtained a private LH Cloud Sandbox, you can skip this step and just
 To run a LittleHorse Server locally in one command, you can run:
 
 ```
-docker run --name littlehorse -d -p 2023:2023 -p 8080:8080 public.ecr.aws/littlehorse/lh-standalone:0.7.0-alpha.3
+docker run --name littlehorse -d -p 2023:2023 -p 8081:8081 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:0.7.1
 ```
 
 Using the local LittleHorse Server takes about 15-25 seconds to start up, but it does not require any further configuration.
@@ -78,7 +78,7 @@ At this point, whether you are using a local Docker deployment or a private LH C
 }
 ```
 
-**You should also be able to see the dashboard** at `https://localhost:8080`. It should be empty, but we will put some data in there soon!
+**You should also be able to see the dashboard** at `https://localhost:8081`. It should be empty, but we will put some data in there soon when we run the workflow!
 
 If you _can't_ get the above to work, please let us know at `info@littlehorse.io`. We will create a community slack for support soon.
 
@@ -105,7 +105,7 @@ You can inspect your `WfSpec` with `lhctl` as follows. It's ok if the response d
 lhctl get wfSpec quickstart
 ```
 
-Now, go to your dashboard in your browser (`http://localhost:8080`) and refresh the page. Scroll down, and double-click on the `quickstart` WfSpec. You should see something that looks like a flow-chart. That is your Workflow Specification!
+Now, go to your dashboard in your browser (`http://localhost:8081`) and refresh the page. Scroll down, and double-click on the `quickstart` WfSpec. You should see something that looks like a flow-chart. That is your Workflow Specification!
 
 ## Run Workflow
 
