@@ -52,7 +52,7 @@ brew install littlehorse-enterprises/lh/lhctl
 Alternatively, if you have `go` but don't have homebrew, you can:
 
 ```
-go install github.com/littlehorse-enterprises/littlehorse/lhctl@0.7.1
+go install github.com/littlehorse-enterprises/littlehorse/lhctl@0.7.2
 ```
 
 ## Local LH Server Setup
@@ -62,7 +62,7 @@ If you have obtained a private LH Cloud Sandbox, you can skip this step and just
 To run a LittleHorse Server locally in one command, you can run:
 
 ```
-docker run --name littlehorse -d -p 2023:2023 -p 8080:8080 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:0.7.1
+docker run --name littlehorse -d -p 2023:2023 -p 8080:8080 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:0.7.2
 ```
 
 Using the local LittleHorse Server takes about 15-25 seconds to start up, but it does not require any further configuration.
