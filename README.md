@@ -132,7 +132,7 @@ Note that the status is `RUNNING`! Why hasn't it completed? That's because we ha
 lhctl search taskRun --taskDefName greet --status TASK_SCHEDULED
 ```
 
-You can also see the `TaskRun` node on the workflow. It's highlighted, meaning that it's already running!
+You can also see the `TaskRun` node on the workflow. It's highlighted, meaning that it's already running! If you click on it, you can see that it is in the `TASK_SCHEDULED` status.
 
 ## Run Task Worker
 
