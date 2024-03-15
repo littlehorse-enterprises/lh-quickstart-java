@@ -86,6 +86,8 @@ If you _can't_ get the above to work, please let us know at `info@littlehorse.io
 
 Without further ado, let's run the example start-to-finish.
 
+If you haven't done so already, at this point go ahead and clone this repository to your local machine.
+
 ## Register Workflow
 
 Let's run the `Main` app with the `register` argument, which does two things:
@@ -160,7 +162,7 @@ Please refresh the dashboard, and you can see the `WfRun` has been completed!
 
 You have now passed the requirements to reach the level of Jedi Youngling. Want to become a Padawan, or even a Knight? Then keep reading!
 
-Here are some cool commands which scratch the surface of observability offered to you by LittleHorse. Note that we are _almost_ done with a UI which will let you do this via click-ops rather than bash-ops.
+Here are some cool commands which scratch the surface of observability offered to you by LittleHorse. Note that you can also access this information via the dashboard at `https://localhost:8080` to do this via click-ops, but in the following section we will show you how to interact with littlehorse through bash-ops.
 
 Also, note that everything we are doing here can be done programmatically via our SDK's, but it's easier to demonstrate with `lhctl`.
 
@@ -180,7 +182,7 @@ lhctl get taskRun <wf_run_id> <task_guid>
 
 ## Search for Someone's Workflow
 
-Remember we passed an `input-name` variable to our workflow? If you look in `register_workflow.py`, specifically the `get_workflow()` function, you can see that we created an Index on the variable. This means we can search for variables by their value!
+Remember we passed an `input-name` variable to our workflow? If you look in `QuickstartWorkflow.java`, specifically the `quickstartWf()` function, you can see that we created an Index on the variable by registering it with `.searchable()`. This means we can search for variables by their value!
 
 ```
 lhctl search variable --varType STR --wfSpecName quickstart --name input-name --value obi-wan
@@ -271,7 +273,7 @@ lhctl get taskRun <wfRunId> <taskGuid>
 
 As you can see, you can get the stack trace through the LittleHorse API.
 
-You can also find the `TaskRun` by searching for failed tasks. Remember that all of this will be presented in a super-cool UI once we have it finished.
+You can also find the `TaskRun` by searching for failed tasks. Remember that all of this is also presented in our super-cool dashboard.
 
 ```
 lhctl search taskRun --taskDefName greet --status TASK_FAILED
