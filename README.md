@@ -52,7 +52,7 @@ brew install littlehorse-enterprises/lh/lhctl
 Alternatively, if you have `go` but don't have homebrew, you can:
 
 ```
-go install github.com/littlehorse-enterprises/littlehorse/lhctl@0.8.0
+go install github.com/littlehorse-enterprises/littlehorse/lhctl@0.9.0
 ```
 
 ## Local LH Server Setup
@@ -62,20 +62,19 @@ If you have obtained a private LH Cloud Sandbox, you can skip this step and just
 To run a LittleHorse Server locally in one command, you can run:
 
 ```
-docker run --name littlehorse -d -p 2023:2023 -p 8080:8080 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:0.8.0
+docker run --name littlehorse -d -p 2023:2023 -p 8080:8080 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:0.9.0
 ```
 
-Using the local LittleHorse Server takes about 15-25 seconds to start up, but it does not require any further configuration.
+Using the local LittleHorse Server takes about 15-25 seconds to start up, but it does not require any further configuration. Please note that the `lh-standalone` docker image requires at least 1.5GB of memory to function properly. This is because it runs kafka, the LH Server, and the LH Dashboard (2 JVM's and a NextJS app) all in one container.
 
 ## Verifying Setup
 
 At this point, whether you are using a local Docker deployment or a private LH Cloud Sandbox, you should be able to contact the LH Server:
 
 ```
--> lhctl search wfSpec
-{
-    "results": []
-}
+->lhctl version
+lhctl version: 0.9.0
+Server version: 0.9.0
 ```
 
 **You should also be able to see the dashboard** at `https://localhost:8080`. It should be empty, but we will put some data in there soon when we run the workflow!
@@ -107,7 +106,7 @@ You can inspect your `WfSpec` with `lhctl` as follows. It's ok if the response d
 lhctl get wfSpec quickstart
 ```
 
-Now, go to your dashboard in your browser (`http://localhost:8080`) and refresh the page. Scroll down, and double-click on the `quickstart` WfSpec. You should see something that looks like a flow-chart. That is your Workflow Specification!
+Now, go to your dashboard in your browser (`http://localhost:8080`) and refresh the page. Click on the `quickstart` WfSpec. You should see something that looks like a flow-chart. That is your Workflow Specification!
 
 ## Run Workflow
 
