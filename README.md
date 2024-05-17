@@ -79,7 +79,7 @@ Server version: 0.9.0
 
 **You should also be able to see the dashboard** at `https://localhost:8080`. It should be empty, but we will put some data in there soon when we run the workflow!
 
-If you _can't_ get the above to work, please let us know at `info@littlehorse.io`. We will create a community slack for support soon.
+If you _can't_ get the above to work, please let us know on our [Community Slack Workspace](https://launchpass.com/littlehorsecommunity). We'll be happy to help.
 
 # Running the Example
 
