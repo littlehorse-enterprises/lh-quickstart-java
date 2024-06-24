@@ -52,7 +52,7 @@ brew install littlehorse-enterprises/lh/lhctl
 Alternatively, if you have `go` but don't have homebrew, you can:
 
 ```
-go install github.com/littlehorse-enterprises/littlehorse/lhctl@0.9.0
+go install github.com/littlehorse-enterprises/littlehorse/lhctl@0.10.0
 ```
 
 ## Local LH Server Setup
@@ -73,8 +73,8 @@ At this point, whether you are using a local Docker deployment or a private LH C
 
 ```
 ->lhctl version
-lhctl version: 0.9.0
-Server version: 0.9.0
+lhctl version: 0.10.0
+Server version: 0.10.0
 ```
 
 **You should also be able to see the dashboard** at `https://localhost:8080`. It should be empty, but we will put some data in there soon when we run the workflow!
