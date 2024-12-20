@@ -1,6 +1,5 @@
 package io.littlehorse.quickstart;
 
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
@@ -15,7 +14,7 @@ public class QuickstartWorkflow {
      */
     public void quickstartWf(WorkflowThread wf) {
         // Create an input variable, make it searchable
-        WfRunVariable name = wf.addVariable("input-name", VariableType.STR).searchable();
+        WfRunVariable name = wf.declareStr("input-name").searchable();
 
         // Execute a task and pass in the variable.
         wf.execute(GREET, name);
