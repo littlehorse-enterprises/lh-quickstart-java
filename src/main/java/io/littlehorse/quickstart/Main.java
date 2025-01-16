@@ -7,7 +7,9 @@ import io.littlehorse.sdk.worker.LHTaskWorker;
 public class Main {
 
     static IdentityVerifier identityVerifier = new IdentityVerifier();
-    static CustomerNotifier customerNotifier = new CustomerNotifier();
+    static NotifyCustomerVerified customerNotifier = new NotifyCustomerVerified();
+    static NotifyCustomerNotVerified customerNotVerified = new NotifyCustomerNotVerified();
+
     static LHConfig config = new LHConfig();
 
     /*
@@ -23,13 +25,19 @@ public class Main {
         LHTaskWorker verifyIdentityWorker = new LHTaskWorker(identityVerifier, "verify-identity", config);
         verifyIdentityWorker.registerTaskDef();
 
-        LHTaskWorker notifyCustomerWorker = new LHTaskWorker(customerNotifier, "notify-customer", config);
-        notifyCustomerWorker.registerTaskDef();
+        LHTaskWorker notifyCustomerVerifiedWorker = new LHTaskWorker(customerNotifier, "notify-customer-verified",
+                config);
+        notifyCustomerVerifiedWorker.registerTaskDef();
+
+        LHTaskWorker notifyCustomerNotVerifiedWorker = new LHTaskWorker(customerNotVerified,
+                "notify-customer-not-verified", config);
+        notifyCustomerNotVerifiedWorker.registerTaskDef();
 
         // Since we didn't start the worker, this is a no-op, but it prevents
         // VSCode from underlining with a squiggly
         verifyIdentityWorker.close();
-        notifyCustomerWorker.close();
+        notifyCustomerVerifiedWorker.close();
+        notifyCustomerNotVerifiedWorker.close();
 
         // Register the WfSpec
         QuickstartWorkflow quickstart = new QuickstartWorkflow();
@@ -43,15 +51,20 @@ public class Main {
     private static void runWorker() {
 
         LHTaskWorker verifyIdentityWorker = new LHTaskWorker(identityVerifier, "verify-identity", config);
-        LHTaskWorker notifyCustomerWorker = new LHTaskWorker(customerNotifier, "notify-customer", config);
+        LHTaskWorker notifyCustomerVerifiedWorker = new LHTaskWorker(customerNotifier, "notify-customer-verified",
+                config);
+        LHTaskWorker notifyCustomerNotVerifiedWorker = new LHTaskWorker(customerNotVerified,
+                "notify-customer-not-verified", config);
 
         // Close the worker upon shutdown
         Runtime.getRuntime().addShutdownHook(new Thread(verifyIdentityWorker::close));
-        Runtime.getRuntime().addShutdownHook(new Thread(notifyCustomerWorker::close));
+        Runtime.getRuntime().addShutdownHook(new Thread(notifyCustomerVerifiedWorker::close));
+        Runtime.getRuntime().addShutdownHook(new Thread(notifyCustomerNotVerifiedWorker::close));
 
         System.out.println("Starting task workers!");
         verifyIdentityWorker.start();
-        notifyCustomerWorker.start();
+        notifyCustomerVerifiedWorker.start();
+        notifyCustomerNotVerifiedWorker.start();
     }
 
     public static void main(String[] args) {
