@@ -17,6 +17,6 @@ public class IdentityVerifier {
 			throw new RuntimeException("The external identity verification API is down");
 		}
 
-		return "Successfully called external API";
+		return "Successfully called external API to request verification for " + firstName + " " + lastName;
 	}
 }
