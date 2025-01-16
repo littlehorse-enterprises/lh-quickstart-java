@@ -25,7 +25,12 @@ You can run this example in two ways:
 1. Using a local deployment of a LittleHorse Server (instructions below, requires one `docker` command).
 2. Using a LittleHorse Server deployed in a cloud sandbox (to get one, contact `info@littlehorse.io`).
 
-In this example, we will run a "Identity Verification" workflow as a quickstart. The workflow takes in three input variables (`firstName`, `lastName`, and `ssn`), and calls a `verify-identity` Task Function with the specified inputs, wait for an external event letting LittleHorse know that the identity has been verified, and then notify the customer.
+In this example, we will develop an "Identity Verification" workflow. The `WfSpec` takes in three input variables (`firstName`, `lastName`, and `ssn`) which represent a customer who is attempting to sign up for some service. Before the vendor can accept the customer, they must verify the customer prospect's identity using a third-party identity verification service—for example, due to compliance reasons.
+
+Our workflow will:
+1. Execute a `TaskRun` that requests a fictitious third-party identity verification service to verify the specified customer's identity.
+2. Wait for the verification process to complete (using a [LittleHorse `ExternalEvent`](https://littlehorse.io/docs/server/concepts/external-events) )
+3. Either accept the customer into the system or reject them; both of which are also [LittleHorse `TaskRun`s](https://littlehorse.io/docs/server/concepts/tasks).
 
 # Prerequisites
 
