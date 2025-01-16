@@ -18,7 +18,7 @@
 
 **Get started in under 5 minutes, or your money back!** 😉
 
-This repo contains a minimal example to get you started using [LittleHorse](https://littlehorse.io) in Java. [LittleHorse](https://littlehorse.io) is a high-performance orchestration engine which lets you build workflow-driven microservice applications with ease.
+This repo contains a minimal example to get you started using LittleHorse in Java. [LittleHorse](https://littlehorse.io) is a high-performance orchestration engine which lets you build workflow-driven microservice applications with ease.
 
 You can run this example in two ways:
 
@@ -28,6 +28,7 @@ You can run this example in two ways:
 In this example, we will develop an "Identity Verification" workflow. The `WfSpec` takes in three input variables (`firstName`, `lastName`, and `ssn`) which represent a customer who is attempting to sign up for some service. Before the vendor can accept the customer, they must verify the customer prospect's identity using a third-party identity verification service—for example, due to compliance reasons.
 
 Our workflow will:
+
 1. Execute a `TaskRun` that requests a fictitious third-party identity verification service to verify the specified customer's identity.
 2. Wait for the verification process to complete (using a [LittleHorse `ExternalEvent`](https://littlehorse.io/docs/server/concepts/external-events) )
 3. Either accept the customer into the system or reject them; both of which are also [LittleHorse `TaskRun`s](https://littlehorse.io/docs/server/concepts/tasks).
@@ -68,8 +69,8 @@ At this point, whether you are using a local Docker deployment or a LittleHorse 
 
 ```sh
 >lhctl version
-lhctl version: 1.0.0 (Git SHA homebrew)
-Server version: 1.0.0
+lhctl version: 0.12.4 (Git SHA homebrew)
+Server version: 0.12.4
 ```
 
 **You should also be able to see the dashboard** at `https://localhost:8080`. It should be empty, but we will put some data in there soon when we run the workflow!
@@ -84,12 +85,11 @@ If you haven't done so already, at this point go ahead and clone this repository
 
 ## Register Workflow
 
-Let's run the `Main` app with the `register` argument, which does two things:
+Let's run the `Main` app with the `register` argument, which does 3 things:
 
-1. Registers a `TaskDef` named `verify-identity` with the LittleHorse Server.
-2. Registers a `TaskDef` named `notify-customer-verified` with the LittleHorse Server.
-3. Registers a `TaskDef` named `notify-customer-not-verified` with the LittleHorse Server.
-4. Registers a `WfSpec` named `quickstart` with the LittleHorse Server.
+1. Registers the `verify-identity`, `notify-customer-verified`, and `notify-customer-not-verified` task definitions (`TaskDef`s) with the LittleHorse Server.
+2. Registers an `ExternalEventDef` named `identity-verified` with the LittleHorse Server.
+3. Registers a `WfSpec` named `quickstart` with the LittleHorse Server.
 
 A [`WfSpec`](https://littlehorse.io/docs/server/concepts/workflows) specifies a process which can be orchestrated by LittleHorse. A [`TaskDef`](https://littlehorse.io/docs/server/concepts/tasks) tells LittleHorse about a specification of a task that can be executed as a step in a `WfSpec`.
 
@@ -180,13 +180,10 @@ Visit our [docs](https://littlehorse.io/docs) or learn more about LittleHorse [h
 
 Want to do more cool stuff with LittleHorse and Java? You can find more Java examples [here](https://github.com/littlehorse-enterprises/littlehorse/tree/master/examples). This example only shows rudimentary features like tasks and variables. Some additional features not covered in this quickstart include:
 
-- Conditionals
 - Loops
-- External Events (webhooks/signals etc)
 - Interrupts
-- User Tasks
+- [User Tasks](https://littlehorse.io/docs/user-tasks-bridge)
 - Multi-Threaded Workflows
-- Workflow Exception Handling
 
 We also have quickstarts in:
 
@@ -197,5 +194,7 @@ We also have quickstarts in:
 Our extensive [documentation](https://littlehorse.io/docs) explains LittleHorse concepts in detail and shows you how take full advantage of our system.
 
 Our LittleHorse Server is free for production use under the SSPL license. You can find our official docker image on our [GitHub Container Registry](https://github.com/littlehorse-enterprises/littlehorse/pkgs/container/littlehorse%2Flh-standalone). If you would like enterprise support, or a managed service (either in the cloud or on-prem), contact `info@littlehorse.io`.
+
+Lastly, if you have any questions, please reach out to us on our [Community Slack Workspace](https://launchpass.com/littlehorsecommunity).
 
 Happy riding!

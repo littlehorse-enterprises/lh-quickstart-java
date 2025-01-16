@@ -1,6 +1,7 @@
 package io.littlehorse.quickstart;
 
 import io.littlehorse.sdk.common.proto.Comparator;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -33,6 +34,11 @@ public class QuickstartWorkflow {
         // This is a blocking call, so it will wait until the event is posted or
         // if the timeout is reached
         NodeOutput identityVerificationResult = wf.waitForEvent(IDENTITY_VERIFIED_EVENT).timeout(60 * 60 * 24 * 3);
+
+        wf.handleError(identityVerificationResult, LHErrorType.TIMEOUT, handler -> {
+            handler.execute(NOTIFY_CUSTOMER_NOT_VERIFIED_TASK, firstName, lastName);
+            handler.fail("customer-not-verified", "Unable to verify customer identity in time.");
+        });
 
         // Assign the output of the ExternalEvent to the `identityVerified` variable.
         identityVerified.assign(identityVerificationResult);
