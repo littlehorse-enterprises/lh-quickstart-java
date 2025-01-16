@@ -1,6 +1,5 @@
 package io.littlehorse.quickstart;
 
-import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -18,22 +17,26 @@ public class QuickstartWorkflow {
      * This method defines the logic of our workflow
      */
     public void quickstartWf(WorkflowThread wf) {
-        // Declare the input variables for the workflow
-        WfRunVariable firstName = wf.declareStr("firstName").searchable().required();
-        WfRunVariable lastName = wf.declareStr("lastName").searchable().required();
+        // Declare the input variables for the workflow.
+        //
+        // Using .searchable() allows us to search for WfRun's based on the value of
+        // these variables, and .required() makes it required to pass the variable
+        // as input.
+        WfRunVariable firstName = wf.declareStr("first-name").searchable().required();
+        WfRunVariable lastName = wf.declareStr("last-name").searchable().required();
+
+        // Social Security Numbers are sensitive, so we mask the variable with `.masked()`.
         WfRunVariable ssn = wf.declareInt("ssn").masked().required();
 
-        // This variable will be used internally to track the identity verification
-        // status and will be able to search for any workflows that have the cusotmer's
-        // identity not verified
-        WfRunVariable identityVerified = wf.declareBool("identityVerified").searchable();
+        // Internal variable representing whether the customer's identity has been verified.
+        WfRunVariable identityVerified = wf.declareBool("identity-verified").searchable();
 
         // Call the verify-identity task and retry it up to 3 times if it fails
         wf.execute(VERIFY_IDENTITY_TASK, firstName, lastName, ssn).withRetries(3);
 
-        // This is a blocking call, so it will wait until the event is posted or
-        // if the timeout is reached
-        NodeOutput identityVerificationResult = wf.waitForEvent(IDENTITY_VERIFIED_EVENT).timeout(60 * 60 * 24 * 3);
+        // Make the WfRun wait until the event is posted or if the timeout is reached
+        NodeOutput identityVerificationResult =
+                wf.waitForEvent(IDENTITY_VERIFIED_EVENT).timeout(60 * 60 * 24 * 3);
 
         wf.handleError(identityVerificationResult, LHErrorType.TIMEOUT, handler -> {
             handler.execute(NOTIFY_CUSTOMER_NOT_VERIFIED_TASK, firstName, lastName);
@@ -44,10 +47,12 @@ public class QuickstartWorkflow {
         identityVerified.assign(identityVerificationResult);
 
         // Notify the customer if their identity was verified or not
-        wf.doIfElse(wf.condition(identityVerified, Comparator.EQUALS, true),
-                (ifBody) -> {
+        wf.doIfElse(
+                identityVerified.isEqualTo(true),
+                ifBody -> {
                     ifBody.execute(NOTIFY_CUSTOMER_VERIFIED_TASK, firstName, lastName);
-                }, (elseBody) -> {
+                },
+                elseBody -> {
                     elseBody.execute(NOTIFY_CUSTOMER_NOT_VERIFIED_TASK, firstName, lastName);
                 });
     }
