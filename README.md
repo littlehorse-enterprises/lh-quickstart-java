@@ -1,5 +1,5 @@
 <p align="center">
-<img alt="LH" src="https://littlehorse.dev/img/logo.jpg" width="50%">
+<img alt="LittleHorse Logo" src="https://littlehorse.io/img/logo-wordmark-white.png" width="50%">
 </p>
 
 # LittleHorse Java Quickstart
@@ -7,7 +7,7 @@
 - [LittleHorse Java Quickstart](#littlehorse-java-quickstart)
 - [Prerequisites](#prerequisites)
   - [LittleHorse CLI](#littlehorse-cli)
-  - [Local LH Server Setup](#local-lh-server-setup)
+  - [Local LittleHorse Server Setup](#local-littlehorse-server-setup)
   - [Verifying Setup](#verifying-setup)
 - [Running the Example](#running-the-example)
   - [Register Workflow](#register-workflow)
@@ -23,7 +23,7 @@ This repo contains a minimal example to get you started using [LittleHorse](http
 You can run this example in two ways:
 
 1. Using a local deployment of a LittleHorse Server (instructions below, requires one `docker` command).
-2. Using a LittleHorse Server deployed in a cloud sandbox (to get one, contact `info@littlehorse.io`).
+2. Using a LittleHorse Cloud Sandbox (to get one, contact `info@littlehorse.io`).
 
 In this example, we will develop an "Identity Verification" workflow. The `WfSpec` takes in three input variables (`firstName`, `lastName`, and `ssn`) which represent a customer who is attempting to sign up for some service. Before the vendor can accept the customer, they must verify the customer prospect's identity using a third-party identity verification service—for example, due to compliance reasons.
 
@@ -37,7 +37,7 @@ Our workflow will:
 Your system needs:
 
 - Java 11 or greater
-- `docker` to run the LH Server, OR access to a private LH Cloud Sandbox.
+- `docker` to run the LittleHorse Server, OR access to a LittleHorse Cloud Sandbox
 - Homebrew (tested on Mac or Linux) to install `lhctl`
 
 This example uses Gradle to compile the Java code, but you can get around that dependency by using `./gradlew` which wraps the gradle binary in a Jar file and relies upon your system installation of Java.
@@ -50,9 +50,9 @@ Install the LittleHorse CLI:
 brew install littlehorse-enterprises/lh/lhctl
 ```
 
-## Local LH Server Setup
+## Local LittleHorse Server Setup
 
-If you have obtained a private LH Cloud Sandbox, you can skip this step and just follow the configuration instructions you received from the LittleHorse Team (remember to set your environment variables!).
+If you have obtained a LittleHorse Cloud Sandbox, you can skip this step and just follow the configuration instructions you received from the LittleHorse Team (remember to set your environment variables!).
 
 To run a LittleHorse Server locally in one command, you can run:
 
@@ -60,11 +60,11 @@ To run a LittleHorse Server locally in one command, you can run:
 docker run --name littlehorse -d -p 2023:2023 -p 8080:8080 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:latest
 ```
 
-Using the local LittleHorse Server takes about 15-25 seconds to start up, but it does not require any further configuration. Please note that the `lh-standalone` docker image requires at least 1.5GB of memory to function properly. This is because it runs kafka, the LH Server, and the LH Dashboard (2 JVM's and a NextJS app) all in one container.
+Using the local LittleHorse Server takes about 15-25 seconds to start up, but it does not require any further configuration. Please note that the `lh-standalone` docker image requires at least 1.5GB of memory to function properly. This is because it runs Apache Kafka, the LittleHorse Server, and the LittleHorse Dashboard all in one container.
 
 ## Verifying Setup
 
-At this point, whether you are using a local Docker deployment or a private LH Cloud Sandbox, you should be able to contact the LH Server:
+At this point, whether you are using a local Docker deployment or a LittleHorse Cloud Sandbox, you should be able to contact the LittleHorse Server:
 
 ```sh
 >lhctl version
@@ -86,10 +86,10 @@ If you haven't done so already, at this point go ahead and clone this repository
 
 Let's run the `Main` app with the `register` argument, which does two things:
 
-1. Registers a `TaskDef` named `verify-identity` with LittleHorse.
-2. Registers a `TaskDef` named `notify-customer-verified` with LittleHorse.
-3. Registers a `TaskDef` named `notify-customer-not-verified` with LittleHorse.
-4. Registers a `WfSpec` named `quickstart` with LittleHorse.
+1. Registers a `TaskDef` named `verify-identity` with the LittleHorse Server.
+2. Registers a `TaskDef` named `notify-customer-verified` with the LittleHorse Server.
+3. Registers a `TaskDef` named `notify-customer-not-verified` with the LittleHorse Server.
+4. Registers a `WfSpec` named `quickstart` with the LittleHorse Server.
 
 A [`WfSpec`](https://littlehorse.io/docs/server/concepts/workflows) specifies a process which can be orchestrated by LittleHorse. A [`TaskDef`](https://littlehorse.io/docs/server/concepts/tasks) tells LittleHorse about a specification of a task that can be executed as a step in a `WfSpec`.
 
