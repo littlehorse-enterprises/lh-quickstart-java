@@ -1,5 +1,6 @@
 plugins {
     id 'application'
+    id 'com.diffplug.spotless' version '6.25.0'
 }
 
 group = 'io.littlehorse.quickstart'
@@ -23,6 +24,13 @@ dependencies {
 
 application {
     mainClass = 'io.littlehorse.quickstart.Main'
+}
+
+spotless {
+    java {
+        target('**/*.java')
+        palantirJavaFormat()
+    }
 }
 
 // This is helpful so that we can use the Reflection API to determine the names

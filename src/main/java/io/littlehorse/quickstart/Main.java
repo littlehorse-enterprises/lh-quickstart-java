@@ -19,8 +19,8 @@ public class Main {
         // We must register the `ExternalEventDef` for `identity-verified` before we can
         // use it in
         // a `WfSpec`.
-        config.getBlockingStub().putExternalEventDef(
-                PutExternalEventDefRequest.newBuilder()
+        config.getBlockingStub()
+                .putExternalEventDef(PutExternalEventDefRequest.newBuilder()
                         .setName("identity-verified")
                         .build());
 
@@ -28,12 +28,12 @@ public class Main {
         LHTaskWorker verifyIdentityWorker = new LHTaskWorker(identityVerifier, "verify-identity", config);
         verifyIdentityWorker.registerTaskDef();
 
-        LHTaskWorker notifyCustomerVerifiedWorker = new LHTaskWorker(customerNotifier, "notify-customer-verified",
-                config);
+        LHTaskWorker notifyCustomerVerifiedWorker =
+                new LHTaskWorker(customerNotifier, "notify-customer-verified", config);
         notifyCustomerVerifiedWorker.registerTaskDef();
 
-        LHTaskWorker notifyCustomerNotVerifiedWorker = new LHTaskWorker(customerNotVerified,
-                "notify-customer-not-verified", config);
+        LHTaskWorker notifyCustomerNotVerifiedWorker =
+                new LHTaskWorker(customerNotVerified, "notify-customer-not-verified", config);
         notifyCustomerNotVerifiedWorker.registerTaskDef();
 
         // Since we didn't start the worker, this is a no-op, but it prevents
@@ -54,10 +54,10 @@ public class Main {
     private static void runWorkers() {
 
         LHTaskWorker verifyIdentityWorker = new LHTaskWorker(identityVerifier, "verify-identity", config);
-        LHTaskWorker notifyCustomerVerifiedWorker = new LHTaskWorker(customerNotifier, "notify-customer-verified",
-                config);
-        LHTaskWorker notifyCustomerNotVerifiedWorker = new LHTaskWorker(customerNotVerified,
-                "notify-customer-not-verified", config);
+        LHTaskWorker notifyCustomerVerifiedWorker =
+                new LHTaskWorker(customerNotifier, "notify-customer-verified", config);
+        LHTaskWorker notifyCustomerNotVerifiedWorker =
+                new LHTaskWorker(customerNotVerified, "notify-customer-not-verified", config);
 
         // Close the worker upon shutdown
         Runtime.getRuntime().addShutdownHook(new Thread(verifyIdentityWorker::close));
