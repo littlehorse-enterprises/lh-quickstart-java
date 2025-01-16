@@ -16,6 +16,8 @@ public class Main {
      * This method registers the TaskDef and WfSpec to the LH Server.
      */
     private static void registerWorkflow() {
+        // We must register the `ExternalEventDef` for `identity-verified` before we can use it in
+        // a `WfSpec`.
         config.getBlockingStub().putExternalEventDef(
                 PutExternalEventDefRequest.newBuilder()
                         .setName("identity-verified")
