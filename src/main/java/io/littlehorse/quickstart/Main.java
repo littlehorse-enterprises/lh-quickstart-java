@@ -16,7 +16,8 @@ public class Main {
      * This method registers the TaskDef and WfSpec to the LH Server.
      */
     private static void registerWorkflow() {
-        // We must register the `ExternalEventDef` for `identity-verified` before we can use it in
+        // We must register the `ExternalEventDef` for `identity-verified` before we can
+        // use it in
         // a `WfSpec`.
         config.getBlockingStub().putExternalEventDef(
                 PutExternalEventDefRequest.newBuilder()
@@ -50,7 +51,7 @@ public class Main {
      * This method starts a Task Worker which polls the LH Server for 'greet' tasks
      * and executes them.
      */
-    private static void runWorker() {
+    private static void runWorkers() {
 
         LHTaskWorker verifyIdentityWorker = new LHTaskWorker(identityVerifier, "verify-identity", config);
         LHTaskWorker notifyCustomerVerifiedWorker = new LHTaskWorker(customerNotifier, "notify-customer-verified",
@@ -78,7 +79,7 @@ public class Main {
         if (args[0].equals("register")) {
             registerWorkflow();
         } else {
-            runWorker();
+            runWorkers();
         }
     }
 }

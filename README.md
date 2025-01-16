@@ -98,7 +98,7 @@ You can inspect your `WfSpec` with `lhctl` as follows. It's ok if the response d
 lhctl get wfSpec quickstart
 ```
 
-Now, go to your dashboard in your browser (`http://localhost:8080`) and refresh the page. Click on the `quickstart` WfSpec. You should see something that looks like a flow-chart. That is your Workflow Specification!
+Now, go to your dashboard in your browser (`http://localhost:8080`). Click on the `quickstart` WfSpec. You should see something that looks like a flow-chart. That is your Workflow Specification!
 
 ## Run Workflow
 
@@ -117,7 +117,7 @@ Let's look at our `WfRun` once again. To do it with the CLI, please run:
 lhctl get wfRun <wf_run_id>
 ```
 
-If you would like to see it on the dashboard, refresh the `WfSpec` page and scroll down. You should see your ID under the `RUNNING` column. Please double click on your `WfRun` id, and it will take you to the `WfRun` page.
+If you would like to see it on the dashboard, go to the `WfSpec` page and scroll down. You should see your ID under the `RUNNING` column. Please double click on your `WfRun` id, and it will take you to the `WfRun` page.
 
 Note that the status is `RUNNING`! Why hasn't it completed? That's because we haven't yet started a worker which executes the `verify-identity` and `notify-customer-verified` or `notify-customer-not-verified` tasks. Want to verify that? Let's search for all tasks in the queue which haven't been executed yet. You should see an entry whose `wfRunId` matches the Id from above:
 
@@ -165,7 +165,7 @@ If you want the workflow to know that the identity was not able to be verified, 
 lhctl postEvent <wf_run_id> identity-verified BOOL false
 ```
 
-If you refresh the `WfRun` page in your browser, you will see that the workflow has completed and the customer has been notified that whether their identity has been verified or not.
+If you go to the `WfRun` page in your browser, you will see that the workflow has completed and the customer has been notified that whether their identity has been verified or not.
 
 # Next Steps
 
