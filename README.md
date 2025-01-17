@@ -12,7 +12,7 @@
 - [Running the Example](#running-the-example)
   - [Register Metadata](#register-metadata)
   - [Run Workflow](#run-workflow)
-  - [Run Task Worker](#run-task-worker)
+  - [Run Task Workers](#run-task-workers)
   - [Posting an Event](#posting-an-event)
 - [Next Steps](#next-steps)
 
@@ -85,7 +85,7 @@ If you haven't done so already, at this point go ahead and clone this repository
 
 ## Register Metadata
 
-Let's run the `Main` app, which does 4 things:
+Let's run the `Main` app, which does 3 things:
 
 1. Registers the `verify-identity`, `notify-customer-verified`, and `notify-customer-not-verified` task definitions (`TaskDef`s) with the LittleHorse Server.
 2. Registers an `ExternalEventDef` named `identity-verified` with the LittleHorse Server.
@@ -132,21 +132,21 @@ lhctl search taskRun --taskDefName verify-identity --status TASK_SCHEDULED
 
 You can also see the `TaskRun` node on the workflow. It's highlighted, meaning that it's already running! If you click on it, you can see that it is in the `TASK_SCHEDULED` status.
 
-## Run Task Worker
+## Run Task Workers
 
-Now let's start our worker, so that our blocked `WfRun` can finish. What this does is start a daemon which calls the `KnowYourCustomerTasks#verifyIdentity()` Java Method for every scheduled `TaskRun` with appropriate parameters.
+Now let's start our workers, so that our blocked `WfRun` can finish. What this does is start a daemon which calls the `KnowYourCustomerTasks#verifyIdentity()` Java Method for every scheduled `TaskRun` with appropriate parameters.
 
 ```sh
 ./gradlew run --args worker
 ```
 
-Once the worker starts up, please open another terminal and inspect our `WfRun` again:
+Once the workers starts up, please open another terminal and inspect our `WfRun` again:
 
 ```sh
 lhctl get wfRun <wf_run_id>
 ```
 
-Voila! It's completed. You can also verify that the Task Queue is empty now that the Task Worker executed all of the tasks:
+Voila! It's completed. You can also verify that the Task Queue is empty now that the Task Workers executed all of the tasks:
 
 ```sh
 lhctl search taskRun --taskDefName verify-identity --status TASK_SCHEDULED
