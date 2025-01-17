@@ -4,7 +4,7 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import java.util.Random;
 
-public class IdentityVerifier {
+public class KnowYourCustomerTasks {
 
     private static final Random random = new Random();
 
@@ -17,5 +17,16 @@ public class IdentityVerifier {
         }
 
         return "Successfully called external API to request verification for " + firstName + " " + lastName;
+    }
+
+    @LHTaskMethod("notify-customer-verified")
+    public String notifyCustomerVerified(String firstName, String lastName) {
+        return "Notification sent to customer " + firstName + " " + lastName + " that their identity has been verified";
+    }
+
+    @LHTaskMethod("notify-customer-not-verified")
+    public String notifyCustomerNotVerified(String firstName, String lastName) {
+        return "Notification sent to customer " + firstName + " " + lastName
+                + " that their identity has not been verified";
     }
 }

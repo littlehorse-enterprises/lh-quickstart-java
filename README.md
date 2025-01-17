@@ -10,7 +10,7 @@
   - [Local LittleHorse Server Setup](#local-littlehorse-server-setup)
   - [Verifying Setup](#verifying-setup)
 - [Running the Example](#running-the-example)
-  - [Register Workflow](#register-workflow)
+  - [Register Metadata](#register-metadata)
   - [Run Workflow](#run-workflow)
   - [Run Task Worker](#run-task-worker)
   - [Posting an Event](#posting-an-event)
@@ -25,7 +25,7 @@ You can run this example in two ways:
 1. Using a local deployment of a LittleHorse Server (instructions below, requires one `docker` command).
 2. Using a LittleHorse Cloud Sandbox (to get one, contact `info@littlehorse.io`).
 
-In this example, we will develop an "Identity Verification" workflow. The `WfSpec` takes in three input variables (`firstName`, `lastName`, and `ssn`) which represent a customer who is attempting to sign up for some service. Before the vendor can accept the customer, they must verify the customer prospect's identity using a third-party identity verification service—for example, due to compliance reasons.
+This quickstart demonstrates a Know Your Customer (KYC) workflow. The `WfSpec` takes in three input variables (`firstName`, `lastName`, and `ssn`) which represent a customer who is attempting to sign up for some service. Before the vendor can accept the customer, they must verify the customer prospect's identity using a third-party identity verification service—for example, due to compliance reasons.
 
 Our workflow will:
 
@@ -83,9 +83,9 @@ Without further ado, let's run the example start-to-finish.
 
 If you haven't done so already, at this point go ahead and clone this repository to your local machine.
 
-## Register Workflow
+## Register Metadata
 
-Let's run the `Main` app with the `register` argument, which does 3 things:
+Let's run the `Main` app, which does 4 things:
 
 1. Registers the `verify-identity`, `notify-customer-verified`, and `notify-customer-not-verified` task definitions (`TaskDef`s) with the LittleHorse Server.
 2. Registers an `ExternalEventDef` named `identity-verified` with the LittleHorse Server.
@@ -134,7 +134,7 @@ You can also see the `TaskRun` node on the workflow. It's highlighted, meaning t
 
 ## Run Task Worker
 
-Now let's start our worker, so that our blocked `WfRun` can finish. What this does is start a daemon which calls the `IdentityVerifier#verifyIdentity()` Java Method for every scheduled `TaskRun` with appropriate parameters.
+Now let's start our worker, so that our blocked `WfRun` can finish. What this does is start a daemon which calls the `KnowYourCustomerTasks#verifyIdentity()` Java Method for every scheduled `TaskRun` with appropriate parameters.
 
 ```sh
 ./gradlew run --args worker
