@@ -6,34 +6,29 @@ import io.littlehorse.sdk.worker.LHTaskWorker;
 
 public class Main {
 
-    static IdentityVerifier identityVerifier = new IdentityVerifier();
-    static NotifyCustomerVerified customerNotifier = new NotifyCustomerVerified();
-    static NotifyCustomerNotVerified customerNotVerified = new NotifyCustomerNotVerified();
+    static KnowYourCustomerTasks tasks = new KnowYourCustomerTasks();
 
     static LHConfig config = new LHConfig();
 
     /*
      * This method registers the TaskDef and WfSpec to the LH Server.
      */
-    private static void registerWorkflow() {
+    private static void registerMetadata() {
         // We must register the `ExternalEventDef` for `identity-verified` before we can
-        // use it in
-        // a `WfSpec`.
+        // use it in a `WfSpec`.
         config.getBlockingStub()
                 .putExternalEventDef(PutExternalEventDefRequest.newBuilder()
                         .setName("identity-verified")
                         .build());
 
-        // Generate the TaskDef from the worker object itself
-        LHTaskWorker verifyIdentityWorker = new LHTaskWorker(identityVerifier, "verify-identity", config);
+        // We must also register the TaskDefs before we can use them in a `WfSpec`.
+        LHTaskWorker verifyIdentityWorker = new LHTaskWorker(tasks, "verify-identity", config);
         verifyIdentityWorker.registerTaskDef();
 
-        LHTaskWorker notifyCustomerVerifiedWorker =
-                new LHTaskWorker(customerNotifier, "notify-customer-verified", config);
+        LHTaskWorker notifyCustomerVerifiedWorker = new LHTaskWorker(tasks, "notify-customer-verified", config);
         notifyCustomerVerifiedWorker.registerTaskDef();
 
-        LHTaskWorker notifyCustomerNotVerifiedWorker =
-                new LHTaskWorker(customerNotVerified, "notify-customer-not-verified", config);
+        LHTaskWorker notifyCustomerNotVerifiedWorker = new LHTaskWorker(tasks, "notify-customer-not-verified", config);
         notifyCustomerNotVerifiedWorker.registerTaskDef();
 
         // Since we didn't start the worker, this is a no-op, but it prevents
@@ -42,7 +37,7 @@ public class Main {
         notifyCustomerVerifiedWorker.close();
         notifyCustomerNotVerifiedWorker.close();
 
-        // Register the WfSpec
+        // After registering the other metadata, we can finally register the WfSpec
         QuickstartWorkflow quickstart = new QuickstartWorkflow();
         quickstart.getWorkflow().registerWfSpec(config.getBlockingStub());
     }
@@ -51,13 +46,11 @@ public class Main {
      * This method starts a Task Worker which polls the LH Server for 'greet' tasks
      * and executes them.
      */
-    private static void runWorkers() {
+    private static void startTaskWorkers() {
 
-        LHTaskWorker verifyIdentityWorker = new LHTaskWorker(identityVerifier, "verify-identity", config);
-        LHTaskWorker notifyCustomerVerifiedWorker =
-                new LHTaskWorker(customerNotifier, "notify-customer-verified", config);
-        LHTaskWorker notifyCustomerNotVerifiedWorker =
-                new LHTaskWorker(customerNotVerified, "notify-customer-not-verified", config);
+        LHTaskWorker verifyIdentityWorker = new LHTaskWorker(tasks, "verify-identity", config);
+        LHTaskWorker notifyCustomerVerifiedWorker = new LHTaskWorker(tasks, "notify-customer-verified", config);
+        LHTaskWorker notifyCustomerNotVerifiedWorker = new LHTaskWorker(tasks, "notify-customer-not-verified", config);
 
         // Close the worker upon shutdown
         Runtime.getRuntime().addShutdownHook(new Thread(verifyIdentityWorker::close));
@@ -77,9 +70,9 @@ public class Main {
         }
 
         if (args[0].equals("register")) {
-            registerWorkflow();
+            registerMetadata();
         } else {
-            runWorkers();
+            startTaskWorkers();
         }
     }
 }

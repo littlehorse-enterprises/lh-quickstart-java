@@ -25,10 +25,12 @@ public class QuickstartWorkflow {
         WfRunVariable firstName = wf.declareStr("first-name").searchable().required();
         WfRunVariable lastName = wf.declareStr("last-name").searchable().required();
 
-        // Social Security Numbers are sensitive, so we mask the variable with `.masked()`.
+        // Social Security Numbers are sensitive, so we mask the variable with
+        // `.masked()`.
         WfRunVariable ssn = wf.declareInt("ssn").masked().required();
 
-        // Internal variable representing whether the customer's identity has been verified.
+        // Internal variable representing whether the customer's identity has been
+        // verified.
         WfRunVariable identityVerified = wf.declareBool("identity-verified").searchable();
 
         // Call the verify-identity task and retry it up to 3 times if it fails
