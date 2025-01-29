@@ -69,8 +69,8 @@ At this point, whether you are using a local Docker deployment or a LittleHorse 
 
 ```sh
 >lhctl version
-lhctl version: 0.12.4 (Git SHA homebrew)
-Server version: 0.12.4
+lhctl version: 0.12.5 (Git SHA homebrew)
+Server version: 0.12.5
 ```
 
 **You should also be able to see the dashboard** at `https://localhost:8080`. It should be empty, but we will put some data in there soon when we run the workflow!
