@@ -137,7 +137,7 @@ You can also see the `TaskRun` node on the workflow. It's highlighted, meaning t
 Now let's start our workers, so that our blocked `WfRun` can finish. What this does is start a daemon which calls the `KnowYourCustomerTasks#verifyIdentity()` Java Method for every scheduled `TaskRun` with appropriate parameters.
 
 ```sh
-./gradlew run --args worker
+./gradlew run --args workers
 ```
 
 Once the workers starts up, please open another terminal and inspect our `WfRun` again:

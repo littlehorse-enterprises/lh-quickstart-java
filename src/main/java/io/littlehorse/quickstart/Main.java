@@ -66,8 +66,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        if (args.length != 1 || (!args[0].equals("register") && !args[0].equals("worker"))) {
-            System.err.println("Please provide one argument: either 'register' or 'worker'");
+        if (args.length != 1 || (!args[0].equals("register") && !args[0].equals("workers"))) {
+            System.err.println("Please provide one argument: either 'register' or 'workers'");
             System.exit(1);
         }
 
