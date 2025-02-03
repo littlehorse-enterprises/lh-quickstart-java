@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class KnowYourCustomerTasks {
 
-    private static final Random random = new Random();
+    private final Random random = new Random();
 
     @LHTaskMethod("verify-identity")
     public String verifyIdentity(String firstName, String lastName, @LHType(masked = true) int ssn) {

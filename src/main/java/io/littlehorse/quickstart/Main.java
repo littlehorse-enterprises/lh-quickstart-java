@@ -11,7 +11,8 @@ public class Main {
     static LHConfig config = new LHConfig();
 
     /*
-     * This method registers the TaskDef and WfSpec to the LH Server.
+     * This method registers the TaskDefs, ExternalEventDef, and WfSpec to the LH
+     * Server.
      */
     private static void registerMetadata() {
         // We must register the `ExternalEventDef` for `identity-verified` before we can
@@ -43,8 +44,9 @@ public class Main {
     }
 
     /*
-     * This method starts a Task Worker which polls the LH Server for 'greet' tasks
-     * and executes them.
+     * This method starts the Task Workers which poll the LH Server for
+     * 'verify-identity', 'notify-customer-verified', and
+     * 'notify-customer-not-verified' tasks and executes them.
      */
     private static void startTaskWorkers() {
 
@@ -64,8 +66,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        if (args.length != 1 || (!args[0].equals("register") && !args[0].equals("worker"))) {
-            System.err.println("Please provide one argument: either 'register' or 'worker'");
+        if (args.length != 1 || (!args[0].equals("register") && !args[0].equals("workers"))) {
+            System.err.println("Please provide one argument: either 'register' or 'workers'");
             System.exit(1);
         }
 
